@@ -12,45 +12,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      # Outputs the name of the repository (owner/repo)
-      - name: Build Image Name
-        id: image
+      - name: Set output
+        id: vars
+        run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
+
+      - name: Check output
+        env:
+          RELEASE_VERSION: ${{ steps.vars.outputs.tag }}
         run: |
-          # The name of the owner and of the repository: owner/repository
-          IMAGE_NAME=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')
-          echo ::set-output name=image_name::${IMAGE_NAME}
-
-      # Outputs container tags for tagged pushes starting by 'v'
-      # Pushes only to GitHub Container Repository (ghcr.io)
-      #
-      # Tags stable versions as :latest
-      # Pre-releases, alphas, etc. as :snapshot
-      - name: Prepare Image Tags from Git Tag
-        id: tagged
-        if: ${{ startsWith(github.ref, 'refs/tags/') }}
-        run: |
-          # Remove everything else than the tagged version
-          VERSION=${GITHUB_REF#refs/tags/}
-
-          # Tag as stable (:latest) if there is no letters in the version
-          # Otherwise, tag as preview (:snapshot)
-          if [[ $VERSION =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            # Matches 1.0.0, 1.0.1, etc.
-            NAMED_VERSION="latest"
-          else
-            # Matches 1.0.0a1, 1.0.0rc1, etc.
-            NAMED_VERSION="snapshot"
-          fi
-
-          TAGS=$"\
-          ghcr.io/${{ steps.image.outputs.image_name }}:${NAMED_VERSION},\
-          ghcr.io/${{ steps.image.outputs.image_name }}:${VERSION}\
-          "
-
-          # Output the target tags
-          echo "
-          CONTAINER_TAGS=${TAGS}
-          NAMED_VERSION=${NAMED_VERSION}" >> "${GITHUB_ENV}"
+          echo $RELEASE_VERSION
+          echo ${{ steps.vars.outputs.tag }}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
@@ -83,12 +54,10 @@ jobs:
           context: ./
           platforms: linux/amd64
           push: true
-          tags: ${{ env.CONTAINER_TAGS }}
+          tags: ghcr.io/anezka-centrum/saleor:${{ steps.vars.outputs.tag }}, ghcr.io/anezka-centrum/saleor:latest
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
-          build-args: |
-            VERSION=${{ env.NAMED_VERSION }}
-            COMMIT_ID=${{ github.sha }}
+
 
       - name: Image digest
         run: |
