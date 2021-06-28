@@ -16,7 +16,7 @@ from . import (
     void,
 )
 
-GATEWAY_NAME = "Dummy Credit Card"
+GATEWAY_NAME = "Dummy Credit Card WOW"
 
 if TYPE_CHECKING:
     from ...interface import GatewayResponse, PaymentData, TokenConfig
