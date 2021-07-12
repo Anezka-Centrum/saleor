@@ -1,0 +1,21 @@
+<mjml>
+    <mj-head>
+        <mj-preview>
+            <!-- TODO Add mail preview -->
+        </mj-preview>
+    </mj-head>
+    <mj-body background-color="#D8D8D8">
+        <mj-wrapper background-color="#FFFFFF" border-radius="0 0 12px 12px" padding="0">
+            <mj-section padding="0">
+                <mj-column>
+                    <mj-image src="https://broskyna.anezka.sk/logo-with-years.svg" height="48px"/>
+                </mj-column>
+            </mj-section>
+            <mj-section padding="0" background-color="#ECFBF4">
+                <mj-column>
+                    <mj-image src="https://broskyna.anezka.sk/logo-with-years.svg" height="48px"/>
+                </mj-column>
+            </mj-section>
+        </mj-wrapper>
+    </mj-body>
+</mjml>
