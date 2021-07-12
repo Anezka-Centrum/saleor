@@ -1,21 +1,160 @@
 <mjml>
     <mj-head>
-        <mj-preview>
-            <!-- TODO Add mail preview -->
-        </mj-preview>
+        <mj-attributes>
+            <mj-section padding="0"/>
+            <mj-button
+                    height="48px"
+                    border-radius="6px"
+                    background-color="linear-gradient(135deg, #42A6A7 0%, #79A742 100%)"
+                    background-color="#79A742"
+
+                    color="#FFFFFF"
+                    font-family="Arial"
+                    font-size="14px"
+                    font-weight="bold"
+                    padding="0"
+            />
+            <mj-text
+                    color="#3D6263"
+                    font-family="Arial"
+                    font-size="14px"
+                    align="center"
+                    line-height="28px"
+            />
+            <mj-class
+                    name="title"
+                    color="#22432A"
+                    font-family="Times"
+                    font-size="32px"
+                    letter-spacing="0"
+                    line-height="38px"
+                    text-align="center"
+            />
+        </mj-attributes>
     </mj-head>
-    <mj-body background-color="#D8D8D8">
-        <mj-wrapper background-color="#FFFFFF" border-radius="0 0 12px 12px" padding="0">
+    <mj-body background-color="#f0f0f0">
+        <mj-wrapper background-color="#FFFFFF" border-radius="0 0 12px 12px" padding="0" padding-bottom="48px">
             <mj-section padding="0">
                 <mj-column>
                     <mj-image src="https://broskyna.anezka.sk/logo-with-years.svg" height="48px"/>
                 </mj-column>
             </mj-section>
-            <mj-section padding="0" background-color="#ECFBF4">
+            <mj-section padding-bottom="0" padding-top="48px" background-color="F1FCF7">
                 <mj-column>
-                    <mj-image src="https://broskyna.anezka.sk/logo-with-years.svg" height="48px"/>
+                    <mj-image src="https://api.broskyna.anezka.sk/static/images/email/password.png" height="188px"
+                              width="324px"/>
+                </mj-column>
+            </mj-section>
+            <mj-section padding="0" background-color="#FFFFFF" background-size="100% 48px" background-repeat="no-repeat"
+                        background-url="https://api.broskyna.anezka.sk/static/images/email/background-transition.png">
+                <mj-spacer height="48"></mj-spacer>
+            </mj-section>
+            <mj-section padding-top="48px">
+                <mj-column>
+                    <mj-text mj-class="title">Zabudnuté heslo</mj-text>
+                    <mj-text>Zažiadali ste o<b>zmenu hesla</b>. Pre potvrdenie kliknite na tlačidlo nižšie.
+                    </mj-text>
+                    <mj-button padding-top="12px">Resetovať heslo</mj-button>
+                    <mj-text padding-top="20px" line-height="20px" font-size="12px">Odkaz bude platný 24 hodin.
+                        <br/>
+                        Ak ste o obnovenie hesla nepožiadali, tento e-mail môžete ignorovať.
+                    </mj-text>
                 </mj-column>
             </mj-section>
         </mj-wrapper>
+        <!--<mj-include path="./shared/footer.mjml" />-->
+        <mj-spacer height="48px"/>
+        <mj-wrapper background-color="#79A742" full-width="full-width" padding="24px">
+            <mj-section>
+                <mj-column>
+                    <mj-text
+                            font-family="Times"
+                            font-weight="bold"
+                    >
+                        <a href="mailto:objednavky@anezka.sk"
+                           style="color: white; text-decoration: none; white-space: nowrap">objednavky@anezka.sk
+                        </a>
+                    </mj-text>
+                </mj-column>
+                <mj-column>
+                    <mj-image src="https://broskyna.anezka.sk/logo-white.svg"/>
+                </mj-column>
+
+                <mj-column>
+                    <mj-social>
+                        <mj-social-element name="facebook-noshare" icon-size="24px"
+                                           href="https://www.facebook.com/anezkacentrum" background-color="none"/>
+                        <mj-social-element name="instagram-noshare" icon-size="24px" background-color="none"
+                                           href="https://www.instagram.com/anezkacentrumbiopotraviny"/>
+                    </mj-social>
+                </mj-column>
+            </mj-section>
+            <mj-section>
+
+                <mj-column>
+                    <mj-divider border-width="1px" border-color="#91b664"/>
+                </mj-column>
+            </mj-section>
+
+            <mj-section>
+                <mj-column>
+                    <mj-text
+                            align="left"
+                            font-family="Times"
+                            line-height="24px"
+                            font-size="14px"
+                    >
+                        Anežka centrum s.r.o.,
+                        <br/>
+                        <span style="color: white">Alžbetina&nbsp;18, 040&nbsp;01&nbsp;Košice</span>
+                        <br/>
+                        Otváracie hodiny:
+                        <br/>
+                        <span style="color: white">Po~Pia: 8:00&nbsp;-&nbsp;16:30</span>
+                    </mj-text>
+                </mj-column>
+                <mj-column>
+                    <mj-text
+                            align="left"
+                            font-family="Times"
+                            line-height="38px"
+                            font-size="14px"
+                            font-weight="bold"
+                            color="#22432A"
+                    >
+                        <span style="color: white">‣&nbsp;&nbsp;</span>Potraviny &amp; Výživa
+                        <br/>
+                        <span style="color: white">‣&nbsp;&nbsp;</span>Kozmetika
+                        <br/>
+                        <span style="color: white">‣&nbsp;&nbsp;</span>Masáž
+                        <br/>
+                    </mj-text>
+                </mj-column>
+                <mj-column>
+                    <mj-text
+                            align="left"
+                            font-family="Times"
+                            line-height="38px"
+                            font-size="14px"
+                            font-weight="bold"
+                            color="#22432A"
+                    >
+                        <span style="color: white">‣&nbsp;&nbsp;</span>Anatómia
+                        <br/>
+                        <span style="color: white">‣&nbsp;&nbsp;</span>Iné
+                        <br/>
+                        <span style="color: white">‣&nbsp;&nbsp;</span>Trápi ma
+                        <br/>
+                    </mj-text>
+                </mj-column>
+            </mj-section>
+        </mj-wrapper>
+        <mj-section padding="0">
+            <mj-column>
+                <mj-text align="center" font-size="10px" line-height="24px" padding="12px">
+                    © 2020 Anezka centrum s.r.o.
+                </mj-text>
+            </mj-column>
+        </mj-section>
     </mj-body>
 </mjml>
