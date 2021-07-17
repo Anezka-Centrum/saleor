@@ -11,16 +11,16 @@
                     />
                 </mj-column>
             </mj-section>
-            <mj-section padding-bottom="0" padding-top="48px" background-color="F1FCF7">
+            <mj-section padding-bottom="0" padding-top="48px" background-color="#F1FCF7">
                 <mj-column>
                     <mj-image src="https://api.broskyna.anezka.sk/static/images/email/order_status_delivery.png"
                               width="480px"/>
                 </mj-column>
             </mj-section>
-            <mj-section padding="0" background-color="#FFFFFF" background-size="100% 48px" background-repeat="no-repeat"
+                        <mj-section padding="0" padding-top="48px" background-color="#FFFFFF" background-size="100% 48px" background-repeat="no-repeat"
                         background-url="https://api.broskyna.anezka.sk/static/images/email/background-transition.png">
-                <mj-spacer height="48"></mj-spacer>
             </mj-section>
+
             <mj-section padding-top="48px">
                 <mj-column>
                     <mj-text mj-class="title">Vaša objednávka #{{ order.id }} je na ceste</mj-text>
