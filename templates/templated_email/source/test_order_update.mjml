@@ -13,8 +13,8 @@
             </mj-section>
             <mj-section padding-bottom="0" padding-top="48px" background-color="F1FCF7">
                 <mj-column>
-                    <mj-image src="https://api.broskyna.anezka.sk/static/images/email/password.png" height="188px"
-                              width="324px"/>
+                    <mj-image src="https://api.broskyna.anezka.sk/static/images/email/order_status_delivery.png"
+                              width="480px"/>
                 </mj-column>
             </mj-section>
             <mj-section padding="0" background-color="#FFFFFF" background-size="100% 48px" background-repeat="no-repeat"
@@ -23,13 +23,18 @@
             </mj-section>
             <mj-section padding-top="48px">
                 <mj-column>
-                    <mj-text mj-class="title">Zmena e‑mailovej adresy</mj-text>
-                    <mj-text>Tento email ste dostali pretože, Vy alebo niekto iný zmenil emailovú adresu pre Váš účet na stránke anezka.sk</mj-text>
-
-                    <mj-text padding-top="20px" line-height="20px" font-size="12px">Ak ste o túto zmenu nepožiadali, kontaktujte prosím Administrátora</mj-text>
+                    <mj-text mj-class="title">Vaša objednávka #{{ order.id }} je na ceste</mj-text>
+                    <mj-text>Vašu objednávku sme skompletizovali a predali kurierskej spoločnosti.
+                    </mj-text>
+                    <mj-button padding-top="12px">Sledovať objednávku</mj-button>
                 </mj-column>
             </mj-section>
         </mj-wrapper>
+
+        <mj-spacer height="24px"/>
+
+        <mj-include path="./partials/_order_lines.mjml"/>
+
         <mj-include path="./shared/footer.mjml"/>
     </mj-body>
 </mjml>

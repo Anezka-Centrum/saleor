@@ -1,3 +1,38 @@
 <mj-raw>
-  {% load static %}
+    {% load static %}
 </mj-raw>
+<mj-head>
+    <mj-attributes>
+        <mj-section padding="0"/>
+        <mj-button
+                height="48px"
+                border-radius="6px"
+                background-color="linear-gradient(135deg, #42A6A7 0%, #79A742 100%)"
+                background-color="#79A742"
+
+                color="#FFFFFF"
+                font-family="Arial"
+                font-size="14px"
+                font-weight="bold"
+                padding="0"
+        />
+        <mj-text
+                color="#3D6263"
+                font-family="Arial"
+                font-size="14px"
+                align="center"
+                line-height="28px"
+        />
+        <mj-class
+                name="title"
+                color="#22432A"
+                font-family="Times"
+                font-size="32px"
+                letter-spacing="0"
+                line-height="38px"
+                text-align="center"
+        />
+    </mj-attributes>
+    <mj-include path="./styles.mjml" />
+</mj-head>
+

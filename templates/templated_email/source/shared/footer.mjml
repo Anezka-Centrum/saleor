@@ -1,28 +1,121 @@
+<mj-spacer height="48px"/>
+<mj-wrapper background-color="#79A742" full-width="full-width" padding="0" padding-top="30px"
+            padding-bottom="40px">
+    <mj-section>
+        <mj-column vertical-align="middle">
+            <mj-text
+                    font-family="Times"
+                    font-weight="bold"
+            >
+                <a href="mailto:objednavky@anezka.sk"
+                   style="color: white; text-decoration: none; white-space: nowrap">objednavky@anezka.sk
+                </a>
+            </mj-text>
+        </mj-column>
+        <mj-column vertical-align="middle">
+            <mj-image
+                    src="https://api.broskyna.anezka.sk/static/images/email/logo-white.png"
+                    height="48px"
+                    href="https://anezka.sk/"
+            />
+        </mj-column>
 
-<mj-section>
-  <mj-column>
-    <mj-text>
-      {% blocktrans trimmed context "Base email text" %}
-        This is an automatically generated e-mail, please do not reply.
-      {% endblocktrans %}
-    </mj-text>
-  </mj-column>
+        <mj-column vertical-align="middle">
+            <mj-social>
+                <mj-social-element name="facebook-noshare" icon-size="24px"
+                                   href="https://www.facebook.com/anezkacentrum" background-color="none"/>
+                <mj-social-element name="instagram-noshare" icon-size="24px" background-color="none"
+                                   href="https://www.instagram.com/anezkacentrumbiopotraviny"/>
+            </mj-social>
+        </mj-column>
+    </mj-section>
+    <mj-section>
+        <mj-column>
+            <mj-divider border-width="1px" border-color="#91b664"/>
+        </mj-column>
+    </mj-section>
+    <mj-section>
+        <mj-column>
+            <mj-text
+                    align="unset"
+                    font-family="Times"
+                    line-height="24px"
+                    font-size="14px"
+                    font-weight="bold"
+                    color="#22432A"
+                    css-class="text-align-center-on-mobile"
+            >
+                Anežka centrum s.r.o.,
+                <br/>
+                <span style="color: white;font-weight: normal">Alžbetina&nbsp;18, 040&nbsp;01&nbsp;Košice</span>
+                <br/>
+                Otváracie hodiny:
+                <br/>
+                <span style="color: white;font-weight: normal">Po~Pia: 8:00&nbsp;-&nbsp;16:30</span>
+            </mj-text>
+        </mj-column>
+        <mj-column>
+            <mj-text
+                    align="inherit"
+                    font-family="Times"
+                    line-height="38px"
+                    font-size="14px"
+                    font-weight="bold"
+                    color="#22432A"
+                    css-class="text-align-center-on-mobile"
+            >
+                <span style="color: white">‣&nbsp;&nbsp;</span>
+                <a class="link" href="https://anezka.sk/">Potraviny &amp; Výživa</a>
+                <br/>
+                <span style="color: white">‣&nbsp;&nbsp;</span>
+                <a class="link" href="https://anezka.sk/">Kozmetika</a>
+                <br/>
+                <span style="color: white">‣&nbsp;&nbsp;</span>
+                <a class="link" href="https://anezka.sk/">Masáž</a>
+                <br/>
+            </mj-text>
+        </mj-column>
+        <mj-column>
+            <mj-text
+                    align="inherit"
+                    font-family="Times"
+                    line-height="38px"
+                    font-size="14px"
+                    font-weight="bold"
+                    color="#22432A"
+                    css-class="text-align-center-on-mobile"
+            >
+                <span style="color: white">‣&nbsp;&nbsp;</span>
+                <a class="link" href="https://anezka.sk/">Anatómia</a>
+                <br/>
+                <span style="color: white">‣&nbsp;&nbsp;</span>
+                <a class="link" href="https://anezka.sk/">Iné</a>
+                <br/>
+                <span style="color: white">‣&nbsp;&nbsp;</span>
+                <a class="link" href="https://anezka.sk/">Trápi ma</a>
+                <br/>
+            </mj-text>
+        </mj-column>
+    </mj-section>
+</mj-wrapper>
+<mj-section padding="0">
+    <mj-column>
+        <mj-text align="center" font-size="10px" line-height="24px" padding="12px">
+            Prosím neodpovedajte na tento email, bol vygenerovaný automaticky. © 2020 Anezka centrum s.r.o.
+        </mj-text>
+    </mj-column>
 </mj-section>
-<mj-section background-color="#F2F2F2">
-  <mj-column>
-    <mj-text align="center">
-      {% blocktrans trimmed context "Base email footer" %}
-        Sincerely, {{ site_name }}
-      {% endblocktrans %}
-    </mj-text>
-  </mj-column>
-</mj-section>
+
 <mj-section css-class="no-display">
-  <mj-column>
-    <mj-text>
-      {% if schema_markup %}
-        <script type="application/ld+json">{{ schema_markup|safe }}</script>
-      {% endif %}
-    </mj-text>
-  </mj-column>
+    <mj-column>
+        <mj-text>
+            {% if schema_markup %}
+            <script type="application/ld+json">{{
+                schema_markup
+                |
+                safe
+            }}</script>
+            {% endif %}
+        </mj-text>
+    </mj-column>
 </mj-section>

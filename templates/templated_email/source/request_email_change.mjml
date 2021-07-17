@@ -1,30 +1,50 @@
 <mjml>
-  <mj-head>
-    <mj-include path="./shared/styles.mjml" />
-  </mj-head>
-  <mj-body>
-    <mj-raw>
-      {% load i18n %}
-    </mj-raw>
-    <mj-include path="./shared/header.mjml" />
-    <mj-section>
-      <mj-column>
-        <mj-text font-size="16px">
-          {% trans "Hi!" context "Standard e-mail greeting" %}
-        </mj-text>
-        <mj-text>
-          {% blocktrans trimmed context "Email change e-mail text" %}
-          You're receiving this e-mail because you or someone else has requested an email change for your user account at {{ site_name }}.<br />
-          It can be safely ignored if you did not request an email change. Click the link below to confirm new email address.
-          {% endblocktrans %}
-        </mj-text>
-        <mj-text>
-          <a href="{{ redirect_url }}">
-            {{ redirect_url }}
-          </a>
-        </mj-text>
-      </mj-column>
-    </mj-section>
-    <mj-include path="./shared/footer.mjml" />
-  </mj-body>
+    <mj-include path="./shared/header.mjml"/>
+    <mj-body background-color="#f0f0f0">
+        <mj-wrapper background-color="#FFFFFF" border-radius="0 0 12px 12px" padding="0" padding-bottom="48px">
+            <mj-section padding="0">
+                <mj-column>
+                    <mj-image
+                            src="https://broskyna.anezka.sk/logo-with-years.svg"
+                            height="48px"
+                            href="https://anezka.sk/"
+                    />
+                </mj-column>
+            </mj-section>
+            <mj-section padding-bottom="0" padding-top="48px" background-color="F1FCF7">
+                <mj-column>
+                    <mj-image src="https://api.broskyna.anezka.sk/static/images/email/password.png" height="188px"
+                              width="324px"/>
+                </mj-column>
+            </mj-section>
+            <mj-section padding="0" background-color="#FFFFFF" background-size="100% 48px" background-repeat="no-repeat"
+                        background-url="https://api.broskyna.anezka.sk/static/images/email/background-transition.png">
+                <mj-spacer height="48"></mj-spacer>
+            </mj-section>
+            <mj-section padding-top="48px">
+                <mj-column>
+                    <mj-text mj-class="title">Žiadosť o zmenu e‑mailovej adresy</mj-text>
+                    <mj-text>Zažiadali ste o&nbsp;<b>zmenu e‑mailovej adresy</b>
+                        do vášho účtu na anezka.sk.<br/>Pre potvrdenie kliknite na tlačidlo nižšie.
+                    </mj-text>
+                    <mj-button padding-top="12px" href="{{ redirect_url }}">Zmeniť e-mailovú adresu</mj-button>
+                    <mj-text
+                            padding-top="20px"
+                            line-height="20px"
+                            font-size="12px"
+                            padding-bottom="0"
+                    >
+                        <a href="{{ redirect_url }}" style="color: #79A742">
+                            {{ redirect_url }}
+                        </a>
+                    </mj-text>
+                    <mj-text padding-top="20px" line-height="20px" font-size="12px">Odkaz bude platný 24 hodin.
+                        <br/>
+                        Ak ste o zmenu e-mailovej adresy nepožiadali, tento e-mail môžete ignorovať.
+                    </mj-text>
+                </mj-column>
+            </mj-section>
+        </mj-wrapper>
+        <mj-include path="./shared/footer.mjml"/>
+    </mj-body>
 </mjml>

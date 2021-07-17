@@ -1,24 +1,39 @@
 <mjml>
-  <mj-head>
-    <mj-include path="./shared/styles.mjml" />
-  </mj-head>
-  <mj-body>
-    <mj-raw>
-      {% load i18n %}
-    </mj-raw>
-    <mj-include path="./shared/header.mjml" />
-    <mj-section>
-      <mj-column>
-        <mj-text font-size="16px">
-          {% trans "Hi!" context "Standard e-mail greeting" %}
-        </mj-text>
-        <mj-text>
-        {% blocktrans trimmed context "Export products e-mail text" %}
-            Your file with products data is ready to download: <a href="{{ csv_link }}">{{ csv_link }}</a>
-        {% endblocktrans %}
-        </mj-text>
-      </mj-column>
-    </mj-section>
-    <mj-include path="./shared/footer.mjml" />
-  </mj-body>
+    <mj-include path="./shared/header.mjml"/>
+    <mj-body background-color="#f0f0f0">
+        <mj-wrapper background-color="#FFFFFF" border-radius="0 0 12px 12px" padding="0" padding-bottom="48px">
+            <mj-section padding="0">
+                <mj-column>
+                    <mj-image
+                            src="https://broskyna.anezka.sk/logo-with-years.svg"
+                            height="48px"
+                            href="https://anezka.sk/"
+                    />
+                </mj-column>
+            </mj-section>
+            <mj-section padding-bottom="0" padding-top="48px" background-color="F1FCF7">
+                <mj-column>
+                    <mj-image src="https://api.broskyna.anezka.sk/static/images/email/password.png" height="188px"
+                              width="324px"/>
+                </mj-column>
+            </mj-section>
+            <mj-section padding="0" background-color="#FFFFFF" background-size="100% 48px" background-repeat="no-repeat"
+                        background-url="https://api.broskyna.anezka.sk/static/images/email/background-transition.png">
+                <mj-spacer height="48"></mj-spacer>
+            </mj-section>
+            <mj-section padding-top="48px">
+                <mj-column>
+                    <mj-text mj-class="title">Export fail</mj-text>
+                    <mj-text>
+                        {% blocktrans trimmed context "Export products e-mail text" %}
+                        Your file with products data is ready to download:
+                        <a href="{{ csv_link }}">{{ csv_link }}</a>
+                        {% endblocktrans %}
+                    </mj-text>
+                </mj-column>
+            </mj-section>
+        </mj-wrapper>
+        <mj-include path="./shared/footer.mjml"/>
+    </mj-body>
 </mjml>
+

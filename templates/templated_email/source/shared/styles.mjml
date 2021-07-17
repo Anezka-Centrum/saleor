@@ -1,28 +1,43 @@
 <mj-style inline="inline">
-  .no-display {
-    display: none;
-  }
+    .no-display {
+        display: none;
+    }
 
-  .no-padding td {
-    padding: 0px;
-  }
+    .no-padding td {
+        padding: 0px;
+    }
 
-  td, th {
-    padding: 5px;
-  }
+    td, th {
+        padding: 5px;
+    }
 
-  .table-header-row {
-     border-bottom: 2px solid #000;
-  }
+    .table-header-row {
+        border-bottom: 2px solid #000;
+    }
 
-  .table-item-row {
-    border-bottom: 1px solid #D3D1D0;
-  }
+    .table-item-row {
+        border-bottom: 1px solid #D3D1D0;
+    }
+
+    a {
+        text-decoration: none;
+        color: inherit;
+    }
 </mj-style>
 <mj-style>
 
-  address {
-    font-style: inherit;
-    font-family: Ubuntu, Helvetica, Arial;
-  }
+    address {
+        font-style: inherit;
+        font-family: Ubuntu, Helvetica, Arial;
+    }
+
+    .text-align-center-on-mobile {
+        text-align: left !important;
+    }
+
+    @media only screen and (max-width: 480px) {
+        .text-align-center-on-mobile {
+            text-align: center !important;
+        }
+    }
 </mj-style>

@@ -7,7 +7,6 @@
       {% load i18n %}
       {% load i18n_address_tags %}
     </mj-raw>
-    <mj-include path="./shared/header.mjml" />
     <mj-section>
       <mj-column>
         <mj-text font-size="16px">
