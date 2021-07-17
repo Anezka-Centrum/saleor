@@ -5,8 +5,9 @@
             <mj-section padding="0">
                 <mj-column>
                     <mj-image
-                            src="https://broskyna.anezka.sk/logo-with-years.svg"
+                            src="https://broskyna.anezka.sk/logo-with-years.png"
                             height="48px"
+                            width="169px"
                             href="https://anezka.sk/"
                     />
                 </mj-column>
@@ -18,7 +19,7 @@
                 </mj-column>
             </mj-section>
                         <mj-section padding="0" padding-top="48px" background-color="#FFFFFF" background-size="100% 48px" background-repeat="no-repeat"
-                        background-url="https://api.broskyna.anezka.sk/static/images/email/background-transition.png">
+                        background-url="https://api.broskyna.anezka.sk/static/images/email/background-transition.png?1?1">
             </mj-section>
 
             <mj-section padding-top="48px">
