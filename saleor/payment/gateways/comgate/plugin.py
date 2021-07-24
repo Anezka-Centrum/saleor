@@ -1,25 +1,10 @@
-from typing import TYPE_CHECKING, List
-
+from saleor.payment import TransactionKind
+from saleor.payment.gateways.comgate import Comgate, CurrencyCodes
+from saleor.payment.gateways.utils import get_supported_currencies
+from saleor.payment.interface import GatewayConfig, GatewayResponse, PaymentData
 from saleor.plugins.base_plugin import BasePlugin, ConfigurationTypeField
 
-from ..utils import get_supported_currencies
-from . import (
-    GatewayConfig,
-    authorize,
-    capture,
-    list_client_sources,
-    process_payment,
-    refund,
-    void,
-)
-
-GATEWAY_NAME = "Stripe"
-
-if TYPE_CHECKING:
-    # flake8: noqa
-    from . import GatewayResponse, PaymentData
-    from ...interface import CustomerSource
-
+GATEWAY_NAME = "ComGate.cz"
 
 def require_active_plugin(fn):
     def wrapped(self, *args, **kwargs):
@@ -31,44 +16,50 @@ def require_active_plugin(fn):
     return wrapped
 
 
-class StripeGatewayPlugin(BasePlugin):
+class ComgateGatewayPlugin(BasePlugin):
     PLUGIN_NAME = GATEWAY_NAME
-    PLUGIN_ID = "mirumee.payments.stripe"
+    PLUGIN_ID = "anezka.payments.comgate"
     DEFAULT_CONFIGURATION = [
-        {"name": "Public API key", "value": None},
+        {"name": "Merchant", "value": None},
         {"name": "Secret API key", "value": None},
-        {"name": "Store customers card", "value": False},
-        {"name": "Automatic payment capture", "value": True},
-        {"name": "Supported currencies", "value": ""},
+        {"name": "Permitted payment methods", "value": "ALL"},
+        {"name": "Currency", "value": "EUR"},
+        {"name": "Country", "value": "SK"},
+        {"name": "Test Mode", "value": False},
     ]
 
     CONFIG_STRUCTURE = {
-        "Public API key": {
-            "type": ConfigurationTypeField.SECRET,
-            "help_text": "Provide Stripe public API key.",
-            "label": "Public API key",
+        "Merchant": {
+            "type": ConfigurationTypeField.STRING,
+            "help_text": "E-shop identifier in the ComGate system - you can find it in the Client Portal in the section e-shop settings - e-shop connection.",
+            "label": "Merchant ID",
         },
         "Secret API key": {
             "type": ConfigurationTypeField.SECRET,
-            "help_text": "Provide Stripe secret API key.",
+            "help_text": "Password for the backgorund comunication with the ComGate system - you can find it in the Client Portal in the section e-shop settings - e-shop connection - connection detail.",
             "label": "Secret API key",
         },
-        "Store customers card": {
-            "type": ConfigurationTypeField.BOOLEAN,
-            "help_text": "Determines if Saleor should store cards on payments "
-            "in Stripe customer.",
-            "label": "Store customers card",
-        },
-        "Automatic payment capture": {
-            "type": ConfigurationTypeField.BOOLEAN,
-            "help_text": "Determines if Saleor should automaticaly capture payments.",
-            "label": "Automatic payment capture",
-        },
-        "Supported currencies": {
+        "Permitted payment methods": {
             "type": ConfigurationTypeField.STRING,
-            "help_text": "Determines currencies supported by gateway."
-            " Please enter currency codes separated by a comma.",
-            "label": "Supported currencies",
+            "help_text": "The method of payment from the table of payment methods, the value \"ALL\" if the method is to be chosen by the payer, or a simple expression with the choice of methods (described by the link below)."
+                         "https://help.comgate.cz/docs/cs/api-protokol#v%C3%BDb%C4%9Br-platebn%C3%AD-metody",
+            "https://help.comgate.cz/docs/protocol-api-en#code-lists"
+            "label": "Permitted payment methods",
+        },
+        "Currency": {
+            "type": ConfigurationTypeField.STRING,
+            "help_text": 'Currency code according to ISO 4217. Available currencies: CZK, EUR, PLN, HUF, USD, GBP, RON, HRK, NOK, SEK.',
+            "label": "Currency",
+        },
+        "Country": {
+            "type": ConfigurationTypeField.STRING,
+            "help_text": 'Possible values: ALL, AT, BE, CY, CZ, DE, EE, EL, ES, FI, FR, GB, HR, HU, IE, IT, LT, LU, LV, MT, NL, NO, PL, PT, RO, SL, SK, SV, US. If the parameter is missing, "CZ" is used automatically. The parameter is used to limit the selection of payment methods at the payment gateway. It is necessary to select the correct combination of "country" and "curr" parameters for the given region. For example, to display Czech buttons and pay by card in CZK, choose the combination country = CZ and curr = CZK. For Slovak bank buttons and card payments in EUR, select country = SK and curr = EUR. For Polish bank buttons and card payment in PLN, select country = PL and curr = PLN. For other foreign currencies, you can use the country = ALL parameter or another country code that the payment gateway accepts.',
+            "label": "Country",
+        },
+        "Test Mode": {
+            "type": ConfigurationTypeField.BOOLEAN,
+            "help_text": '⚠️ DANGEROUSE ⚠️ If set to true all the payment will be completed without charging of money. Never enable in production!',
+            "label": "Test mode",
         },
     }
 
@@ -77,55 +68,72 @@ class StripeGatewayPlugin(BasePlugin):
         configuration = {item["name"]: item["value"] for item in self.configuration}
         self.config = GatewayConfig(
             gateway_name=GATEWAY_NAME,
-            auto_capture=configuration["Automatic payment capture"],
+            auto_capture=False,
             supported_currencies=configuration["Supported currencies"],
             connection_params={
-                "public_key": configuration["Public API key"],
-                "private_key": configuration["Secret API key"],
+                "merchant": configuration["Merchant"],
+                "secret": configuration["Secret API key"],
+                "test": configuration["Test Mode"],
+                "country": configuration["Country"],
+                "currency": configuration["Currency"],
+                "payment_methods": configuration["Permitted payment methods"],
             },
-            store_customer=configuration["Store customers card"],
+            store_customer=False,
+        )
+
+    def get_comgate_client(self):
+        config = self._get_gateway_config()
+
+        return Comgate(
+            merchant=config.connection_params['merchant'],
+            secret=config.connection_params['secret'],
+            test=config.connection_params['test']
         )
 
     def _get_gateway_config(self):
         return self.config
 
     @require_active_plugin
-    def authorize_payment(
-        self, payment_information: "PaymentData", previous_value
-    ) -> "GatewayResponse":
-        return authorize(payment_information, self._get_gateway_config())
-
-    @require_active_plugin
-    def capture_payment(
-        self, payment_information: "PaymentData", previous_value
-    ) -> "GatewayResponse":
-        return capture(payment_information, self._get_gateway_config())
-
-    @require_active_plugin
-    def refund_payment(
-        self, payment_information: "PaymentData", previous_value
-    ) -> "GatewayResponse":
-        return refund(payment_information, self._get_gateway_config())
-
-    @require_active_plugin
-    def void_payment(
-        self, payment_information: "PaymentData", previous_value
-    ) -> "GatewayResponse":
-        return void(payment_information, self._get_gateway_config())
-
-    @require_active_plugin
     def process_payment(
-        self, payment_information: "PaymentData", previous_value
+            self, payment_information: "PaymentData", previous_value
     ) -> "GatewayResponse":
-        return process_payment(payment_information, self._get_gateway_config())
+        config = self._get_gateway_config()
 
-    @require_active_plugin
-    def list_payment_sources(
-        self, customer_id: str, previous_value
-    ) -> List["CustomerSource"]:
-        sources = list_client_sources(self._get_gateway_config(), customer_id)
-        previous_value.extend(sources)
-        return previous_value
+        gate = self.get_comgate_client()
+
+        is_success = False
+        error_msg = None
+
+        (transId, redirect) = None, None
+        try:
+            (transId, redirect) = gate.create(
+                country=CurrencyCodes[config.connection_params['country']],
+                price=int(payment_information.amount * 100),
+                currency=CurrencyCodes[payment_information.currency],
+                label=f"Order ID {payment_information.order_id}",
+                refId=str(payment_information.order_id),
+                method=config.connection_params['payment_methods'],
+                email=payment_information.customer_email,
+                prepareOnly=True,
+            )
+            is_success = True
+        except:
+            error_msg = "Payment gateway error (Create request failed)"
+
+        return GatewayResponse(
+            is_success=is_success,
+            action_required=False,
+            kind=TransactionKind.PENDING,
+            amount=payment_information.amount,
+            currency=payment_information.currency,
+            customer_id=payment_information.customer_id,
+            transaction_id=transId,
+            error=error_msg,
+            payment_method_info=None,
+            raw_response={
+                'redirectUrl': redirect
+            },
+        )
 
     @require_active_plugin
     def get_supported_currencies(self, previous_value):
@@ -135,7 +143,6 @@ class StripeGatewayPlugin(BasePlugin):
     @require_active_plugin
     def get_payment_config(self, previous_value):
         config = self._get_gateway_config()
-        return [
-            {"field": "api_key", "value": config.connection_params["public_key"]},
-            {"field": "store_customer_card", "value": config.store_customer},
-        ]
+        return [{
+            'ola': 'Hello there 👋'
+        }]

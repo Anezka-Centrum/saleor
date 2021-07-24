@@ -1,11 +1,17 @@
+import codecs
+import logging
+import urllib.parse
 from enum import Enum
+from typing import NamedTuple
 from urllib.parse import urljoin
-from utils import prepare_params
 
 import requests
 
+from utils import prepare_params
 
-COMGATE_API = 'https://payments.comgate.cz/v1.0'
+logger = logging.getLogger(__name__)
+
+COMGATE_API = 'https://payments.comgate.cz/v1.0/'
 
 
 class CountryCodes(Enum):
@@ -98,12 +104,13 @@ class TransactionCreateError(Exception):
         self.message = TransactionCreateErrorCodes.get(errorCode)
         super().__init__(self.message)
 
-
 class Comgate:
     def __init__(self, merchant: str, secret: str, test: bool):
         self.merchant = merchant
         self.secret = secret
         self.test = test
+
+    CreateResponse = NamedTuple('CreateResponse', [('transId', str), ('redirect', str)])
 
     def create(self,
                country: Enum,
@@ -124,7 +131,7 @@ class Comgate:
                eetReport: bool = None,
                eetData: bool = None,
                embedded: bool = None,
-               ):
+               ) -> CreateResponse:
         if not isinstance(country, CountryCodes):
             raise TypeError('Country must be an instance of CountryCodes')
 
@@ -162,26 +169,40 @@ class Comgate:
             "embedded": initRecurring,
         }
 
-        params = {k.lower(): v for k, v in params.items()}
-
-        print(urljoin(COMGATE_API, '/create'))
+        logger.info('Creating new payment using Comgate payment gateway...')
 
         try:
             response = requests.post(
-                urljoin(COMGATE_API, '/create'),
-                headers={
-                    "Content-Type": "application/x-www-form-urlencoded"
-                },
-                data=prepare_params(params)
+                urljoin(COMGATE_API, 'create'),
+                headers={"Content-Type": "application/x-www-form-urlencoded"},
+                data=prepare_params(params),
+                # allow_redirects=False,
             )
 
-
+            print("response.content", codecs.decode(response.content))
+            print("content", urllib.parse.parse_qs(codecs.decode(response.content)))
 
             response.raise_for_status()
 
+            content = urllib.parse.parse_qs(codecs.decode(response.content))
+            code = int(content['code'][0])
+            message = content['message'][0]
+            transId = content['transId'][0]
+            redirect = content['redirect'][0]
 
-            print(response.request.body)
-            print(str(response.content))
+            if code != 0:
+                logger.error(
+                    'Payment gateway responded with code %d amd message %s(%s)' % (
+                        code, message, TransactionCreateErrorCodes[code]))
 
+                raise RuntimeError(
+                    'Payment gateway responded with code %d amd message %s(%s)' % (
+                        code, message, TransactionCreateErrorCodes[code]))
+
+            logger.info('Comgate payment successfully created!')
+
+            return self.CreateResponse(transId, redirect)
         except:
-            raise RuntimeError('Error while making request to payment gateway')
+            logger.error('Error while making request to Comgate payment gateway!')
+
+            raise RuntimeError('Error while making request to Comgate payment gateway')
