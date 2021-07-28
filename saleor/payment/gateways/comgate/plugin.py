@@ -3,10 +3,7 @@ from ... import TransactionKind
 from .comgate_lib import Comgate, CurrencyCodes
 from ..utils import get_supported_currencies
 from saleor.plugins.base_plugin import BasePlugin, ConfigurationTypeField
-
-if TYPE_CHECKING:
-    # flake8: noqa
-    from ...interface import GatewayConfig, GatewayResponse, PaymentData
+from ...interface import GatewayConfig, GatewayResponse, PaymentData
 
 GATEWAY_NAME = "ComGate.cz"
 
