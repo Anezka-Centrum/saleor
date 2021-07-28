@@ -128,7 +128,6 @@ class ComgateGatewayPlugin(BasePlugin):
 
         return GatewayResponse(
             is_success=is_success,
-            action_required=False,
             kind=TransactionKind.PENDING,
             amount=payment_information.amount,
             currency=payment_information.currency,
@@ -136,6 +135,7 @@ class ComgateGatewayPlugin(BasePlugin):
             transaction_id=transId,
             error=error_msg,
             payment_method_info=None,
+            action_required=True,
             action_required_data={
                 'redirectUrl': redirect
             },
