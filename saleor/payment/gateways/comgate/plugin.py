@@ -70,7 +70,7 @@ class ComgateGatewayPlugin(BasePlugin):
         self.config = GatewayConfig(
             gateway_name=GATEWAY_NAME,
             auto_capture=False,
-            supported_currencies=configuration["Supported currencies"],
+            supported_currencies=configuration["Currency"],
             connection_params={
                 "merchant": configuration["Merchant"],
                 "secret": configuration["Secret API key"],
