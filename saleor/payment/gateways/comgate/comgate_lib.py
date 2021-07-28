@@ -7,7 +7,7 @@ from urllib.parse import urljoin
 
 import requests
 
-from utils import prepare_params
+from .utils import prepare_params
 
 logger = logging.getLogger(__name__)
 

@@ -1,8 +1,12 @@
-from saleor.payment import TransactionKind
-from saleor.payment.gateways.comgate import Comgate, CurrencyCodes
-from saleor.payment.gateways.utils import get_supported_currencies
-from saleor.payment.interface import GatewayConfig, GatewayResponse, PaymentData
+from typing import TYPE_CHECKING
+from ... import TransactionKind
+from .comgate_lib import Comgate, CurrencyCodes
+from ..utils import get_supported_currencies
 from saleor.plugins.base_plugin import BasePlugin, ConfigurationTypeField
+
+if TYPE_CHECKING:
+    # flake8: noqa
+    from ...interface import GatewayConfig, GatewayResponse, PaymentData
 
 GATEWAY_NAME = "ComGate.cz"
 

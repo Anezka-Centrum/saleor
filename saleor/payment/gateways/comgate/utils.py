@@ -1,5 +1,3 @@
-from pprint import pprint
-
 def prepare_params(params):
     prepared = {}
     for name, value in params.items():
@@ -10,7 +8,5 @@ def prepare_params(params):
 
         if value is not None:
             prepared[name] = value
-
-    pprint(prepared)
 
     return prepared
