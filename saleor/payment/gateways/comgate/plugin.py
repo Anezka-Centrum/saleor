@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 import logging
 from ... import TransactionKind
-from .comgate_lib import Comgate, CurrencyCodes
+from .comgate_lib import Comgate, CurrencyCodes, CountryCodes
 from ..utils import get_supported_currencies
 from saleor.plugins.base_plugin import BasePlugin, ConfigurationTypeField
 from ...interface import GatewayConfig, GatewayResponse, PaymentData
@@ -112,7 +112,7 @@ class ComgateGatewayPlugin(BasePlugin):
         (transId, redirect) = None, None
         try:
             (transId, redirect) = gate.create(
-                country=CurrencyCodes[config.connection_params['country']],
+                country=CountryCodes[config.connection_params['country']],
                 price=int(payment_information.amount * 100),
                 currency=CurrencyCodes[payment_information.currency],
                 label=f"Order ID {payment_information.order_id}",
