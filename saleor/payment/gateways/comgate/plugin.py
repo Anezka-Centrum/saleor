@@ -1,9 +1,12 @@
 from typing import TYPE_CHECKING
+import logging
 from ... import TransactionKind
 from .comgate_lib import Comgate, CurrencyCodes
 from ..utils import get_supported_currencies
 from saleor.plugins.base_plugin import BasePlugin, ConfigurationTypeField
 from ...interface import GatewayConfig, GatewayResponse, PaymentData
+
+logger = logging.getLogger(__name__)
 
 GATEWAY_NAME = "Comgate.cz"
 
@@ -119,7 +122,8 @@ class ComgateGatewayPlugin(BasePlugin):
                 prepareOnly=True,
             )
             is_success = True
-        except:
+        except Exception as e:
+            logger.exception(e)
             error_msg = "Payment gateway error (Create request failed)"
 
         return GatewayResponse(
