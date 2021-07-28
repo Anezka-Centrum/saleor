@@ -5,7 +5,8 @@ from ..utils import get_supported_currencies
 from saleor.plugins.base_plugin import BasePlugin, ConfigurationTypeField
 from ...interface import GatewayConfig, GatewayResponse, PaymentData
 
-GATEWAY_NAME = "ComGate.cz"
+GATEWAY_NAME = "Comgate.cz"
+
 
 def require_active_plugin(fn):
     def wrapped(self, *args, **kwargs):
@@ -144,6 +145,9 @@ class ComgateGatewayPlugin(BasePlugin):
     @require_active_plugin
     def get_payment_config(self, previous_value):
         config = self._get_gateway_config()
-        return [{
-            'ola': 'Hello there 👋'
-        }]
+        return [
+            {
+                "field": "ola",
+                "value": 'Hello there 👋',
+            }
+        ]
