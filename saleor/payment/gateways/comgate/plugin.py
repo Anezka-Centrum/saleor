@@ -4,7 +4,8 @@ from ... import TransactionKind
 from .comgate_lib import Comgate, CurrencyCodes, CountryCodes
 from ..utils import get_supported_currencies
 from saleor.plugins.base_plugin import BasePlugin, ConfigurationTypeField
-from ...interface import GatewayConfig, GatewayResponse, PaymentData
+from ...interface import GatewayConfig, GatewayResponse, PaymentData, \
+    InitializedPaymentResponse
 
 logger = logging.getLogger(__name__)
 
@@ -135,14 +136,21 @@ class ComgateGatewayPlugin(BasePlugin):
             transaction_id=transId,
             error=error_msg,
             payment_method_info=None,
-            action_required=True,
-            action_required_data={
-                'redirectUrl': redirect
-            },
+            action_required=False,
             raw_response={
                 'transId': transId,
                 'redirect': redirect,
             },
+        )
+
+    @require_active_plugin
+    def initialize_payment(
+            self, payment_data, previous_value
+    ) -> "InitializedPaymentResponse":
+        return InitializedPaymentResponse(
+            gateway=self.PLUGIN_ID, name=self.PLUGIN_NAME, data=payment_data | {
+                'TRANSACTION_ID': '123abc'
+            }
         )
 
     @require_active_plugin
