@@ -136,7 +136,12 @@ class ComgateGatewayPlugin(BasePlugin):
             transaction_id=transId,
             error=error_msg,
             payment_method_info=None,
-            action_required=False,
+            action_required=True,
+            transaction_already_processed=True,
+            action_required_data={
+                'transId': transId,
+                'redirect': redirect,
+            },
             raw_response={
                 'transId': transId,
                 'redirect': redirect,
