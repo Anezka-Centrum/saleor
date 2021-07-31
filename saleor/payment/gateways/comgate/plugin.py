@@ -1,11 +1,16 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 import logging
-from ... import TransactionKind
+
+from django.core.exceptions import ObjectDoesNotExist
+
+from saleor.order.models import Order
+from ... import TransactionKind, PaymentError
 from .comgate_lib import Comgate, CurrencyCodes, CountryCodes
 from ..utils import get_supported_currencies
 from saleor.plugins.base_plugin import BasePlugin, ConfigurationTypeField
 from ...interface import GatewayConfig, GatewayResponse, PaymentData, \
     InitializedPaymentResponse
+from ...models import Payment
 
 logger = logging.getLogger(__name__)
 
@@ -127,6 +132,19 @@ class ComgateGatewayPlugin(BasePlugin):
             logger.exception(e)
             error_msg = "Payment gateway error (Create request failed)"
 
+        try:
+            payment = Payment.objects.get(pk=payment_information.payment_id)
+            order: Optional[Order] = payment.order
+            if order is None:
+                raise PaymentError(
+                    "Payment cannot be performed. Order does not exists.")
+
+            order.store_value_in_metadata({'COMGATE_PAYMENT_URL': redirect})
+            order.save()
+
+        except ObjectDoesNotExist:
+            raise PaymentError("Payment cannot be performed. Payment does not exists.")
+
         return GatewayResponse(
             is_success=is_success,
             kind=TransactionKind.PENDING,
@@ -136,12 +154,7 @@ class ComgateGatewayPlugin(BasePlugin):
             transaction_id=transId,
             error=error_msg,
             payment_method_info=None,
-            action_required=True,
-            transaction_already_processed=True,
-            action_required_data={
-                'transId': transId,
-                'redirect': redirect,
-            },
+            action_required=False,
             raw_response={
                 'transId': transId,
                 'redirect': redirect,
