@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, Any
 import logging
 
 from django.core.exceptions import ObjectDoesNotExist
@@ -121,62 +121,16 @@ class ComgateGatewayPlugin(BasePlugin):
     def process_payment(
             self, payment_information: "PaymentData", previous_value
     ) -> "GatewayResponse":
-        config = self._get_gateway_config()
-
-        gate = self.get_comgate_client()
-
-        is_success = False
-        error_msg = None
-
-        (transId, redirect) = None, None
-        try:
-            (transId, redirect) = gate.create(
-                country=CountryCodes[config.connection_params['country']],
-                price=int(payment_information.amount * 100),
-                currency=CurrencyCodes[payment_information.currency],
-                label=f"Order ID {payment_information.order_id}",
-                refId=str(payment_information.order_id),
-                method=config.connection_params['payment_methods'],
-                email=payment_information.customer_email,
-                prepareOnly=True,
-            )
-            is_success = True
-        except Exception as e:
-            logger.exception(e)
-            error_msg = "Payment gateway error (Create request failed)"
-
-        try:
-            payment = Payment.objects.get(pk=payment_information.payment_id)
-
-            try:
-                checkout = self.get_checkout(payment)
-
-                checkout.store_value_in_metadata(
-                    items={'COMGATE_PAYMENT_URL': redirect})
-                checkout.save()
-
-            except ObjectDoesNotExist:
-                raise PaymentError(
-                    "Payment cannot be performed. Checkout does not exists.")
-
-        except ObjectDoesNotExist:
-            raise PaymentError("Payment cannot be performed. Payment does not exists.")
-
         return GatewayResponse(
-            is_success=is_success,
+            is_success=True,
+            action_required=False,
             kind=TransactionKind.PENDING,
             amount=payment_information.amount,
             currency=payment_information.currency,
-            customer_id=payment_information.customer_id,
-            transaction_id=transId,
-            error=error_msg,
-            payment_method_info=None,
-            action_required=False,
-            raw_response={
-                'transId': transId,
-                'redirect': redirect,
-            },
+            error=None,
+            transaction_id=None,
         )
+
 
     @require_active_plugin
     def initialize_payment(
@@ -187,6 +141,37 @@ class ComgateGatewayPlugin(BasePlugin):
                 'TRANSACTION_ID': '123abc'
             }
         )
+
+    @require_active_plugin
+    def order_created(self, order: "Order", previous_value: Any):
+        config = self._get_gateway_config()
+
+        gate = self.get_comgate_client()
+
+        (transId, redirect) = None, None
+        try:
+            (transId, redirect) = gate.create(
+                country=CountryCodes[config.connection_params['country']],
+                price=int(order.total_net.amount * 100),
+                currency=CurrencyCodes[order.currency],
+                label=f"Order ID {order.id}",
+                refId=str(order.id),
+                method=config.connection_params['payment_methods'],
+                email=order.user_email,
+                prepareOnly=True,
+            )
+        except Exception as e:
+            logger.exception(e)
+            error_msg = "Payment gateway error (Create request failed)"
+
+        try:
+            order.store_value_in_metadata(
+                items={'COMGATE_PAYMENT_URL': redirect})
+            order.save()
+
+        except ObjectDoesNotExist:
+            raise PaymentError(
+                "Payment cannot be performed. Order does not exists.")
 
     @require_active_plugin
     def get_supported_currencies(self, previous_value):
