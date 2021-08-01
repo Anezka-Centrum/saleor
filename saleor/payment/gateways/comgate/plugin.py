@@ -128,7 +128,7 @@ class ComgateGatewayPlugin(BasePlugin):
             amount=payment_information.amount,
             currency=payment_information.currency,
             error=None,
-            transaction_id=None,
+            transaction_id=payment_information.token,
         )
 
 
