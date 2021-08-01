@@ -3,6 +3,7 @@ import logging
 
 from django.core.exceptions import ObjectDoesNotExist
 
+from saleor.checkout.models import Checkout
 from saleor.order.models import Order
 from ... import TransactionKind, PaymentError
 from .comgate_lib import Comgate, CurrencyCodes, CountryCodes
@@ -104,6 +105,18 @@ class ComgateGatewayPlugin(BasePlugin):
     def _get_gateway_config(self):
         return self.config
 
+    def get_checkout(self, payment: Payment) -> Optional[Checkout]:
+        if not payment.checkout:
+            return None
+        # Lock checkout in the same way as in checkoutComplete
+        return (
+            Checkout.objects.select_for_update(of=("self",))
+                .prefetch_related("gift_cards", "lines__variant__product", )
+                .select_related("shipping_method__shipping_zone")
+                .filter(pk=payment.checkout.pk)
+                .first()
+        )
+
     @require_active_plugin
     def process_payment(
             self, payment_information: "PaymentData", previous_value
@@ -134,13 +147,17 @@ class ComgateGatewayPlugin(BasePlugin):
 
         try:
             payment = Payment.objects.get(pk=payment_information.payment_id)
-            order: Optional[Order] = payment.order
-            if order is None:
-                raise PaymentError(
-                    "Payment cannot be performed. Order does not exists.")
 
-            order.store_value_in_metadata({'COMGATE_PAYMENT_URL': redirect})
-            order.save()
+            try:
+                checkout = self.get_checkout(payment)
+
+                checkout.store_value_in_metadata(
+                    items={'COMGATE_PAYMENT_URL': redirect})
+                checkout.save()
+
+            except ObjectDoesNotExist:
+                raise PaymentError(
+                    "Payment cannot be performed. Checkout does not exists.")
 
         except ObjectDoesNotExist:
             raise PaymentError("Payment cannot be performed. Payment does not exists.")
