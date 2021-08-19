@@ -210,14 +210,14 @@ class ComgateGatewayPlugin(BasePlugin):
 
 
         merchant = response_data['merchant']
-        test = response_data['test'][0]
+        # test = response_data['test'][0]
         price = decimal.Decimal(response_data['price'][0])
-        curr = response_data['curr'][0]
-        label = response_data['label'][0]
+        # curr = response_data['curr'][0]
+        # label = response_data['label'][0]
         refId = response_data['refId'][0]
-        method = response_data['method'][0]
-        email = response_data['email'][0]
-        phone = response_data['phone'][0]
+        # method = response_data['method'][0]
+        # email = response_data['email'][0]
+        # phone = response_data['phone'][0]
         transId = response_data['transId'][0]
         secret = response_data['secret'][0]
         status = response_data['status'][0]
