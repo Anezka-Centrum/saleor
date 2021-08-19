@@ -1,7 +1,15 @@
+import codecs
+import decimal
+import json
+import urllib.parse
+from json import JSONDecodeError
 from typing import TYPE_CHECKING, Optional, Any
 import logging
+from ...utils import create_transaction, TransactionKind, create_payment_information
 
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.handlers.wsgi import WSGIRequest
+from django.http import HttpResponse, HttpResponseNotFound, HttpResponseBadRequest
 
 from saleor.checkout.models import Checkout
 from saleor.order.models import Order
@@ -187,3 +195,68 @@ class ComgateGatewayPlugin(BasePlugin):
                 "value": 'Hello there 👋',
             }
         ]
+
+    @require_active_plugin
+    def webhook(self, request: WSGIRequest, path: str, previous_value) -> HttpResponse:
+        config = self._get_gateway_config()
+        if not path.startswith('/webhook/status'):
+            return HttpResponseNotFound()
+
+        try:
+            response_data = urllib.parse.parse_qs(codecs.decode(request.body))
+        except:
+            logger.warning("Cannot parse request body.")
+            return HttpResponse("[accepted]")
+
+
+        merchant = response_data['merchant']
+        test = response_data['test'][0]
+        price = decimal.Decimal(response_data['price'][0])
+        curr = response_data['curr'][0]
+        label = response_data['label'][0]
+        refId = response_data['refId'][0]
+        method = response_data['method'][0]
+        email = response_data['email'][0]
+        phone = response_data['phone'][0]
+        transId = response_data['transId'][0]
+        secret = response_data['secret'][0]
+        status = response_data['status'][0]
+
+        if secret != config.connection_params['secret']:
+            return HttpResponseBadRequest("Invalid secret")
+        if merchant != config.connection_params['merchant']:
+            return HttpResponseBadRequest("Merchant do not match")
+
+        token = refId
+
+        order = Order.objects.filter(checkout_token=token).first()
+
+        if order is None or order.token != refId:
+            logger.warning("")
+            return HttpResponseBadRequest("Order not found")
+
+        payment = Payment.objects.get(order_id=order.id)
+        # 'PaymentData'
+        payment_information = create_payment_information(
+            payment=payment,
+            payment_token=transId,
+            amount=price,
+        )
+
+        if status == "PAID":
+            kind = TransactionKind.CAPTURE
+        elif status == "CANCELED":
+            kind = TransactionKind.CANCEL
+        else:
+            return HttpResponse()
+
+        txn = create_transaction(
+            payment=payment,
+            kind=kind,
+            payment_information=payment_information,
+        )
+
+        print("Transation created")
+        print(txn)
+
+        return HttpResponse()
