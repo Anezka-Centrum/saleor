@@ -163,7 +163,7 @@ class ComgateGatewayPlugin(BasePlugin):
                 price=int(order.total_net.amount * 100),
                 currency=CurrencyCodes[order.currency],
                 label=f"Order ID {order.id}",
-                refId=str(order.id),
+                refId=str(order.token),
                 method=config.connection_params['payment_methods'],
                 email=order.user_email,
                 prepareOnly=True,
