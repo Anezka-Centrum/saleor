@@ -209,7 +209,7 @@ class ComgateGatewayPlugin(BasePlugin):
             return HttpResponse("[accepted]")
 
 
-        merchant = response_data['merchant']
+        merchant = response_data['merchant'][0]
         # test = response_data['test'][0]
         price = decimal.Decimal(response_data['price'][0])
         # curr = response_data['curr'][0]
