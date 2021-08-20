@@ -260,7 +260,7 @@ class ComgateGatewayPlugin(BasePlugin):
             currency=curr,
             transaction_id=transId,
             error=None,
-            raw_response={"request": request.body},
+            # raw_response={"request": request.body},
             searchable_key=transId,
         )
 
