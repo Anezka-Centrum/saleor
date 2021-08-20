@@ -3,6 +3,7 @@ import decimal
 import json
 import urllib.parse
 from json import JSONDecodeError
+from pprint import pprint
 from typing import TYPE_CHECKING, Optional, Any
 import logging
 from ...utils import create_transaction, TransactionKind, create_payment_information
@@ -212,7 +213,7 @@ class ComgateGatewayPlugin(BasePlugin):
         merchant = response_data['merchant'][0]
         # test = response_data['test'][0]
         price = decimal.Decimal(response_data['price'][0])
-        # curr = response_data['curr'][0]
+        curr = response_data['curr'][0]
         # label = response_data['label'][0]
         refId = response_data['refId'][0]
         # method = response_data['method'][0]
@@ -236,6 +237,7 @@ class ComgateGatewayPlugin(BasePlugin):
             return HttpResponseBadRequest("Order not found")
 
         payment = Payment.objects.get(order_id=order.id)
+
         # 'PaymentData'
         payment_information = create_payment_information(
             payment=payment,
@@ -250,13 +252,32 @@ class ComgateGatewayPlugin(BasePlugin):
         else:
             return HttpResponse()
 
-        txn = create_transaction(
+        gateway_response = GatewayResponse(
+            is_success=True,
+            action_required=False,
+            kind=kind,
+            amount=price,
+            currency=curr,
+            transaction_id=transId,
+            error=None,
+            raw_response={"request": request.body},
+            searchable_key=transId,
+        )
+
+        transation = create_transaction(
             payment=payment,
             kind=kind,
             payment_information=payment_information,
+            gateway_response=gateway_response
         )
 
-        print("Transation created")
-        print(txn)
+        print("payment")
+        pprint(payment)
+        print("payment_information")
+        pprint(payment_information)
+        print("gateway_response")
+        pprint(gateway_response)
+        print("Transation")
+        pprint(transation)
 
         return HttpResponse()
