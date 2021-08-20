@@ -6,7 +6,10 @@ from json import JSONDecodeError
 from pprint import pprint
 from typing import TYPE_CHECKING, Optional, Any
 import logging
-from ...utils import create_transaction, TransactionKind, create_payment_information
+
+from saleor.order.actions import order_captured
+from ...utils import create_transaction, TransactionKind, create_payment_information, \
+    gateway_postprocess
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.handlers.wsgi import WSGIRequest
@@ -264,12 +267,15 @@ class ComgateGatewayPlugin(BasePlugin):
             searchable_key=transId,
         )
 
-        transation = create_transaction(
+        transaction = create_transaction(
             payment=payment,
             kind=kind,
             payment_information=payment_information,
             gateway_response=gateway_response
         )
+
+        gateway_postprocess(transaction, payment)
+        order_captured(payment.order, None, transaction.amount, payment)
 
         print("payment")
         pprint(payment)
@@ -277,7 +283,7 @@ class ComgateGatewayPlugin(BasePlugin):
         pprint(payment_information)
         print("gateway_response")
         pprint(gateway_response)
-        print("Transation")
-        pprint(transation)
+        print("Transaction")
+        pprint(transaction)
 
         return HttpResponse()
