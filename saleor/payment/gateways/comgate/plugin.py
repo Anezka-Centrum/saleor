@@ -215,7 +215,7 @@ class ComgateGatewayPlugin(BasePlugin):
 
         merchant = response_data['merchant'][0]
         # test = response_data['test'][0]
-        price = decimal.Decimal(response_data['price'][0])
+        price = decimal.Decimal(response_data['price'][0]) / 100
         curr = response_data['curr'][0]
         # label = response_data['label'][0]
         refId = response_data['refId'][0]
