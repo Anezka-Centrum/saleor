@@ -229,10 +229,10 @@ class ComgateGatewayPlugin(BasePlugin):
 
         token = refId
 
-        order = Order.objects.filter(checkout_token=token).first()
+        order = Order.objects.filter(token=token).first()
 
         if order is None or order.token != refId:
-            logger.warning("")
+            logger.warning("Order not found")
             return HttpResponseBadRequest("Order not found")
 
         payment = Payment.objects.get(order_id=order.id)
