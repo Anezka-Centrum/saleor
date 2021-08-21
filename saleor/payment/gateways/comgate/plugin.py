@@ -244,7 +244,7 @@ class ComgateGatewayPlugin(BasePlugin):
         # 'PaymentData'
         payment_information = create_payment_information(
             payment=payment,
-            payment_token=transId,
+            payment_token=token,
             amount=price,
         )
 
