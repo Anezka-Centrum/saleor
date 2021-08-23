@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING, Optional, Any
 import logging
 
 from saleor.order.actions import order_captured
+from saleor.order.events import external_notification_event
 from ...utils import create_transaction, TransactionKind, create_payment_information, \
     gateway_postprocess
 
@@ -276,6 +277,12 @@ class ComgateGatewayPlugin(BasePlugin):
 
         gateway_postprocess(transaction, payment)
         order_captured(payment.order, None, transaction.amount, payment)
+        external_notification_event(
+            order=payment.order,
+            user=None,
+            message="Comgate payment request  was successful.",
+            parameters={"service": payment.gateway, "id": payment.token},
+        )
 
         print("payment")
         pprint(payment)
