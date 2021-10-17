@@ -155,11 +155,13 @@ class ComgateGatewayPlugin(BasePlugin):
             }
         )
 
+    # TODO: This should only run is COMGATE gateway is used
     @require_active_plugin
     def order_created(self, order: "Order", previous_value: Any):
         config = self._get_gateway_config()
 
         gate = self.get_comgate_client()
+
 
         (transId, redirect) = None, None
         try:
@@ -284,13 +286,13 @@ class ComgateGatewayPlugin(BasePlugin):
             parameters={"service": payment.gateway, "id": payment.token},
         )
 
-        print("payment")
-        pprint(payment)
-        print("payment_information")
-        pprint(payment_information)
-        print("gateway_response")
-        pprint(gateway_response)
-        print("Transaction")
-        pprint(transaction)
+        # print("payment")
+        # pprint(payment)
+        # print("payment_information")
+        # pprint(payment_information)
+        # print("gateway_response")
+        # pprint(gateway_response)
+        # print("Transaction")
+        # pprint(transaction)
 
         return HttpResponse()
