@@ -10,7 +10,7 @@ from ...interface import GatewayConfig, GatewayResponse, PaymentData
 
 logger = logging.getLogger(__name__)
 
-GATEWAY_NAME = "Comgate.cz"
+GATEWAY_NAME = "Cash on delivery"
 
 
 def require_active_plugin(fn):
@@ -23,7 +23,7 @@ def require_active_plugin(fn):
     return wrapped
 
 
-class ComgateGatewayPlugin(BasePlugin):
+class CashOnDeliveryGatewayPlugin(BasePlugin):
     PLUGIN_NAME = GATEWAY_NAME
     PLUGIN_ID = "anezka.payments.cashOnDelivery"
 
