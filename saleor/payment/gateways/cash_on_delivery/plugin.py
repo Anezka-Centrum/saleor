@@ -33,7 +33,7 @@ class CashOnDeliveryGatewayPlugin(BasePlugin):
         self.config = GatewayConfig(
             gateway_name=GATEWAY_NAME,
             auto_capture=False,
-            supported_currencies=configuration["Currency"],
+            supported_currencies="EUR",
             connection_params={},
             store_customer=False,
         )
