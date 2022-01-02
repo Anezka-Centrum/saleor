@@ -506,7 +506,7 @@ GRAPHENE = {
 PLUGINS_MANAGER = "saleor.plugins.manager.PluginsManager"
 
 PLUGINS = [
-    "saleor.payment.gateways.comgate.plugin.ComgateGatewayPlugin",
+    "saleor.payment.gateways.cash_on_delivery.plugin.ComgateGatewayPlugin",
     "saleor.payment.gateways.comgate.plugin.CashOnDeliveryGatewayPlugin",
     "saleor.plugins.avatax.plugin.AvataxPlugin",
     "saleor.plugins.vatlayer.plugin.VatlayerPlugin",
