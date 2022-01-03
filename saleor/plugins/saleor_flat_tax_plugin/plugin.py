@@ -42,7 +42,7 @@ class FlatTaxPlugin(BasePlugin):
 
     CONFIG_STRUCTURE = {
         "flat_taxes": {
-            "type": ConfigurationTypeField.SECRET_MULTILINE,
+            "type": ConfigurationTypeField.STRING,
             "help_test": (
                 "Enter a valid JSON object with the tax name as key and tax amount as value.\n"
                 "You can follow the default flat_taxes example schema."
@@ -54,7 +54,7 @@ class FlatTaxPlugin(BasePlugin):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         configuration = {item["name"]: item["value"] for item in self.configuration}
-        flat_taxes = configuration.pop("flat_taxes")
+        flat_taxes = configuration.get("flat_taxes")
 
         self.flat_taxes = json.loads(flat_taxes)
 
