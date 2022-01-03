@@ -42,7 +42,7 @@ class FlatTaxPlugin(BasePlugin):
 
     CONFIG_STRUCTURE = {
         "flat_taxes": {
-            "type": ConfigurationTypeField.MULTILINE,
+            "type": ConfigurationTypeField.SECRET_MULTILINE,
             "help_test": (
                 "Enter a valid JSON object with the tax name as key and tax amount as value.\n"
                 "You can follow the default flat_taxes example schema."
