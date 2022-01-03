@@ -21,8 +21,6 @@ from . import (
 if TYPE_CHECKING:
     # flake8: noqa
     from saleor.account.models import Address
-    from saleor.channel.models import Channel
-    from saleor.checkout.fetch import CheckoutInfo, CheckoutLineInfo
     from saleor.discount import DiscountInfo
     from saleor.order.models import Order, OrderLine
     from saleor.product.models import (

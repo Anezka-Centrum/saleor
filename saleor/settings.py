@@ -509,6 +509,7 @@ PLUGINS = [
     "saleor.payment.gateways.comgate.plugin.ComgateGatewayPlugin",
     "saleor.payment.gateways.cash_on_delivery.plugin.CashOnDeliveryGatewayPlugin",
     "saleor.plugins.avatax.plugin.AvataxPlugin",
+    "saleor.plugins.saleor_flat_tax_plugin.plugin.FlatTaxPlugin",
     "saleor.plugins.vatlayer.plugin.VatlayerPlugin",
     "saleor.plugins.webhook.plugin.WebhookPlugin",
     "saleor.payment.gateways.dummy.plugin.DummyGatewayPlugin",
